@@ -9,7 +9,7 @@ public class LocalVariables<T> {
     private final ArrayList<Set<T>> array;
 
     public LocalVariables() {
-        this.array = new ArrayList<>();
+        this.array = new ArrayList<Set<T>>();
     }
 
     public void clear() {
@@ -25,7 +25,7 @@ public class LocalVariables<T> {
     }
 
     public void set(int index, T t) {
-        Set<T> set = new HashSet<>();
+        Set<T> set = new HashSet<T>();
         set.add(t);
         array.set(index, set);
     }

@@ -57,13 +57,13 @@ public class CoreMethodAdapter<T> extends MethodVisitor {
             // add current state
             for (int i = 0; i < newLocalVariables.size(); i++) {
                 while (i >= oldLocalVariables.size()) {
-                    oldLocalVariables.add(new HashSet<>());
+                    oldLocalVariables.add((Set<T>) new HashSet<>());
                 }
                 newLocalVariables.get(i).addAll(oldLocalVariables.get(i));
             }
             for (int i = 0; i < newOperandStack.size(); i++) {
                 while (i >= oldOperandStack.size()) {
-                    oldOperandStack.add(new HashSet<>());
+                    oldOperandStack.add((Set<T>) new HashSet<>());
                 }
                 oldOperandStack.get(i).addAll(oldOperandStack.get(i));
             }
@@ -100,11 +100,11 @@ public class CoreMethodAdapter<T> extends MethodVisitor {
         operandStack.clear();
 
         if ((this.access & Opcodes.ACC_STATIC) == 0) {
-            localVariables.add(new HashSet<>());
+            localVariables.add((Set<T>) new HashSet<>());
         }
         for (Type argType : Type.getArgumentTypes(desc)) {
             for (int i = 0; i < argType.getSize(); i++) {
-                localVariables.add(new HashSet<>());
+                localVariables.add((Set<T>) new HashSet<>());
             }
         }
     }
@@ -119,7 +119,7 @@ public class CoreMethodAdapter<T> extends MethodVisitor {
                 objectSize = 2;
             }
             for (int j = operandStack.size(); j < stackSize + objectSize; j++) {
-                operandStack.add(new HashSet<>());
+                operandStack.add((Set<T>) new HashSet<>());
             }
             stackSize += objectSize;
         }
@@ -131,7 +131,7 @@ public class CoreMethodAdapter<T> extends MethodVisitor {
                 objectSize = 2;
             }
             for (int j = localVariables.size(); j < localSize + objectSize; j++) {
-                localVariables.add(new HashSet<>());
+                localVariables.add((Set<T>) new HashSet<>());
             }
             localSize += objectSize;
         }
@@ -457,7 +457,7 @@ public class CoreMethodAdapter<T> extends MethodVisitor {
     @Override
     public void visitVarInsn(int opcode, int var) {
         for (int i = localVariables.size(); i <= var; i++) {
-            localVariables.add(new HashSet<>());
+            localVariables.add((Set<T>) new HashSet<>());
         }
         Set<T> saved0;
         switch (opcode) {
@@ -481,7 +481,7 @@ public class CoreMethodAdapter<T> extends MethodVisitor {
             case Opcodes.LSTORE:
                 operandStack.pop();
                 operandStack.pop();
-                localVariables.set(var, new HashSet<>());
+                localVariables.set(var, (Set<T>) new HashSet<>());
                 break;
             case Opcodes.ASTORE:
                 saved0 = operandStack.pop();
@@ -660,7 +660,7 @@ public class CoreMethodAdapter<T> extends MethodVisitor {
             this.localVariables = newLocalVariables;
         }
         if (exceptionHandlerLabels.contains(label)) {
-            operandStack.push(new HashSet<>());
+            operandStack.push((T) new HashSet<>());
         }
         super.visitLabel(label);
         sanityCheck();

@@ -6,9 +6,10 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="Agent" />
+        <module name="JdkExport" />
         <module name="Exporter" />
         <module name="ShellChecker" />
-        <module name="Agent" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

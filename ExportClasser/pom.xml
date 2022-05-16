@@ -11,65 +11,11 @@
 
     <artifactId>ExportClasser</artifactId>
     <packaging>pom</packaging>
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>8</source>
-                    <target>8</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+
     <modules>
         <module>JdkExport</module>
         <module>AgentExport</module>
-        <module>AgentExportAgent</module>
     </modules>
 
-    <properties>
-        <maven.compiler.source>6</maven.compiler.source>
-        <maven.compiler.target>6</maven.compiler.target>
-    </properties>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.36</version>
-        </dependency>
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.11</version>
-        </dependency>
-        <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-            <version>1.82</version>
-        </dependency>
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>3.28.0-GA</version>
-        </dependency>
-        <dependency>
-            <groupId>sun.jvm.hotspot</groupId>
-            <artifactId>sa-jdi</artifactId>
-            <version>jdk-6</version>
-            <scope>system</scope>
-            <systemPath>${env.JAVA_HOME}/lib/sa-jdi.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.tools</groupId>
-            <artifactId>tools</artifactId>
-            <version>jdk-6</version>
-            <scope>system</scope>
-            <systemPath>${env.JAVA_HOME}/lib/tools.jar</systemPath>
-        </dependency>
-    </dependencies>
 
 </project>

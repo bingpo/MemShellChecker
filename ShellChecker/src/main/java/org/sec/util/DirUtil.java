@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DirUtil {
-    private static final List<String> filenames = new ArrayList<>();
+    private static final List<String> filenames = new ArrayList<String>();
 
     public static List<String> getFiles(String path) {
         filenames.clear();
