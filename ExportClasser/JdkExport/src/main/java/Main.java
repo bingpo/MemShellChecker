@@ -10,7 +10,9 @@ import static jdkExport.JdkExportClasser.export;
 public class Main {
     public static Logger logger = LoggerFactory.getLogger(NameFilter.class);
 
-
+    // docker环境不可用
+    // java应用会被暂停
+    // 不同java版本会异常
     public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, NoSuchFieldException, ParseException {
         long pid = ProcessUtils.select(false, -1, null);
         if(pid==-1){

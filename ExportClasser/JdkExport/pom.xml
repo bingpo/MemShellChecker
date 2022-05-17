@@ -15,7 +15,7 @@
     <artifactId>JdkExport</artifactId>
 
     <properties>
-        <javaHome>/Library/Java/JavaVirtualMachines/jdk1.8.0_11.jdk/Contents/Home</javaHome>
+
     </properties>
 
     <build>
@@ -91,14 +91,14 @@
             <artifactId>sa-jdi</artifactId>
             <version>jdk-8</version>
             <scope>system</scope>
-            <systemPath>${javaHome}/lib/sa-jdi.jar</systemPath>
+            <systemPath>${project.basedir}/lib/jdk8-sa-jdi.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.sun.tools</groupId>
             <artifactId>tools</artifactId>
             <version>jdk-8</version>
             <scope>system</scope>
-            <systemPath>${javaHome}/lib/tools.jar</systemPath>
+            <systemPath>${project.basedir}/lib/jdk8-tools.jar</systemPath>
         </dependency>
     </dependencies>
 

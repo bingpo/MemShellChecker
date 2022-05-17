@@ -17,7 +17,7 @@
         </dependencySet>
         <dependencySet>
             <outputDirectory>/</outputDirectory>
-            <unpack>true</unpack>
+            <unpack>false</unpack>
             <scope>system</scope>
         </dependencySet>
     </dependencySets>
