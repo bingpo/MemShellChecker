@@ -10,8 +10,13 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <packaging>jar</packaging>
 
     <artifactId>JdkExport</artifactId>
+
+    <properties>
+        <javaHome>/Library/Java/JavaVirtualMachines/jdk1.8.0_11.jdk/Contents/Home</javaHome>
+    </properties>
 
     <build>
         <plugins>
@@ -21,9 +26,9 @@
                 <configuration>
                     <source>8</source>
                     <target>8</target>
+                    <encoding>utf-8</encoding>
                 </configuration>
             </plugin>
-
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -44,32 +49,30 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.1</version>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptors>
+                        <descriptor>assembly.xml</descriptor>
+                    </descriptors>
+                    <archive>
+                        <manifest>
+                            <mainClass>Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
                 <executions>
                     <execution>
+                        <id>make-assembly</id>
                         <phase>package</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>single</goal>
                         </goals>
-                        <configuration>
-                            <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <manifestEntries>
-                                        <Main-Class>Main</Main-Class>
-                                    </manifestEntries>
-                                </transformer>
-                            </transformers>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
-
         </plugins>
     </build>
-
-
 
 
     <dependencies>
@@ -78,35 +81,24 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.7.36</version>
         </dependency>
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.2.11</version>
         </dependency>
         <dependency>
-            <groupId>com.beust</groupId>
-            <artifactId>jcommander</artifactId>
-            <version>1.82</version>
-        </dependency>
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>3.28.0-GA</version>
-        </dependency>
-        <dependency>
             <groupId>sun.jvm.hotspot</groupId>
             <artifactId>sa-jdi</artifactId>
-            <version>jdk-6</version>
+            <version>jdk-8</version>
             <scope>system</scope>
-            <systemPath>${env.JAVA_HOME}/lib/sa-jdi.jar</systemPath>
+            <systemPath>${javaHome}/lib/sa-jdi.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.sun.tools</groupId>
             <artifactId>tools</artifactId>
-            <version>jdk-6</version>
+            <version>jdk-8</version>
             <scope>system</scope>
-            <systemPath>${env.JAVA_HOME}/lib/tools.jar</systemPath>
+            <systemPath>${javaHome}/lib/tools.jar</systemPath>
         </dependency>
     </dependencies>
 

@@ -40,20 +40,6 @@
             <artifactId>javassist</artifactId>
             <version>3.28.0-GA</version>
         </dependency>
-        <dependency>
-            <groupId>sun.jvm.hotspot</groupId>
-            <artifactId>sa-jdi</artifactId>
-            <version>jdk-8</version>
-            <scope>system</scope>
-            <systemPath>${env.JAVA_HOME}/lib/sa-jdi.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.tools</groupId>
-            <artifactId>tools</artifactId>
-            <version>jdk-8</version>
-            <scope>system</scope>
-            <systemPath>${env.JAVA_HOME}/lib/tools.jar</systemPath>
-        </dependency>
     </dependencies>
 
 </project>
