@@ -65,12 +65,24 @@ public class Analysis {
             add(asList("java/util/Base64"));
         }};
 
+        List<String> strCharaList = new ArrayList<String>(){{
+            add("shell");
+            add("memshell");
+            add("agentshell");
+            add("exploit");
+            add("payload");
+            add("rebeyond");
+            add("metasploit");
+            add("filter_jsp");
+            add("json");
+        }};
 
-        for (String className:resultMap.keySet()
+
+        for (String classFilePathStr:resultMap.keySet()
         ) {
             boolean importFlag = false;
             for (String _importChara:importCharalList) {
-                for (String _methodStr:resultMap.get(className)) {
+                for (String _methodStr:resultMap.get(classFilePathStr)) {
                     if (_methodStr.contains(_importChara)) {
                         importFlag = true;
                         break;
@@ -80,27 +92,45 @@ public class Analysis {
             }
 
             // 如果没检测到import危险类，就continue
-            if (!importFlag) continue;
+//            if (!importFlag) continue;
 
+
+            boolean checkFlag = false;
             for (List<String> charaSubList:sinkCharaList) {
-                boolean checkFlag = true;
-
                 for (String charaStr:charaSubList) {
-                    if(!resultMap.get(className).contains(charaStr)){
-                        checkFlag = false;
+                    if(resultMap.get(classFilePathStr).contains(charaStr)){
+                        checkFlag = true;
                     }
                 }
 
 
                 if (checkFlag){
-                    logger.info(className);
-                    for (String charaStr:resultMap.get(className)) {
+                    logger.info("====================================================================================");
+                    logger.info(classFilePathStr);
+                    for (String charaStr:resultMap.get(classFilePathStr)) {
                         logger.info(charaStr);
                     }
-                    logger.info("===========================================================");
                     break;
                 }
             }
+
+            if(!checkFlag){
+                String evilCharaStr = "";
+                for (String strChara:strCharaList) {
+                    byte[] bytes = Files.readAllBytes(Paths.get(classFilePathStr));
+                    if (new String(bytes).contains(strChara)){
+                        checkFlag = true;
+                        evilCharaStr = strChara;
+                    }
+                }
+                if (checkFlag){
+                    logger.info("====================================================================================");
+                    logger.info(classFilePathStr);
+                    logger.info("存在关键词：" + evilCharaStr);
+                }
+
+            }
+
         }
 
         return results;

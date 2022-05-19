@@ -12,7 +12,7 @@ public class Main {
 
     // docker环境不可用
     // java应用会被暂停
-    // 不同java版本会异常
+    // 不同java版本调用不同版本的jar会有问题
     public static void main(String[] args) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, NoSuchFieldException, ParseException {
         long pid = ProcessUtils.select(false, -1, null);
         if(pid==-1){
