@@ -14,6 +14,7 @@ import java.util.*;
 public class Cop {
     public static File agent_work_directory = new File(PathUtils.getCurrentDirectory(), "dumpResult");
 
+    // 1、导出某些class会造成进程退出
     public static void main(String[] args) throws Exception {
         long pid = -1;
         String jvm_pid = null;
