@@ -1,4 +1,4 @@
-package utils;
+package code.landgrey.copagent.utils;
 
 import java.io.*;
 
@@ -83,7 +83,7 @@ public class PathUtils {
         try{
             writeByteArrayToFile(file, data, false);
         }catch (IOException e){
-            e.printStackTrace();
+//            e.printStackTrace();
         }
     }
 

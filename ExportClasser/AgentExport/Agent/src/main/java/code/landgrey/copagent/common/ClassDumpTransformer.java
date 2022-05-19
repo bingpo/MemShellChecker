@@ -1,7 +1,7 @@
-package common;
+package code.landgrey.copagent.common;
 
-import utils.LogUtils;
-import utils.PathUtils;
+import code.landgrey.copagent.utils.LogUtils;
+import code.landgrey.copagent.utils.PathUtils;
 
 import java.io.File;
 import java.lang.instrument.ClassFileTransformer;
@@ -43,9 +43,6 @@ public class ClassDumpTransformer implements ClassFileTransformer {
         return null;
     }
 
-    public Map<Class<?>, File> getDumpResult() {
-        return dumpResult;
-    }
 
     private void dumpClassIfNecessary(Class<?> clazz, byte[] data) {
         File dumpClassFile = PathUtils.getStorePath(clazz, true);
@@ -55,20 +52,5 @@ public class ClassDumpTransformer implements ClassFileTransformer {
         dumpResult.put(clazz, dumpClassFile);
     }
 
-    public void dumpJavaIfNecessary(Class<?> clazz, Map<Class<?>, File> classFiles) {
-        File dumpJavaFile = PathUtils.getStorePath(clazz, false);
 
-        File classFile = classFiles.get(clazz);
-        String source = Decompiler.decompile(classFile.getAbsolutePath(), null, false);
-        Pattern pattern = Pattern.compile("(?m)^/\\*\\s*\\*/\\s*$" + System.getProperty("line.separator"));
-        if (source != null) {
-            source = pattern.matcher(source).replaceAll("");
-        } else {
-            source = "unknown";
-        }
-
-        PathUtils.writeByteArrayToFile(dumpJavaFile, source.getBytes());
-        LogUtils.logit("Store java: " + clazz.getName() + " to " + dumpJavaFile.getAbsolutePath());
-
-    }
 }

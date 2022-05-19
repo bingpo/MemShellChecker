@@ -1,16 +1,11 @@
 package code.landgrey.copagent;
 
-import utils.ClassUtils;
-import utils.LogUtils;
-import utils.PathUtils;
-import utils.SearchUtils;
-import com.sun.org.apache.bcel.internal.Repository;
-import com.sun.org.apache.bcel.internal.util.ClassPath;
-import com.sun.org.apache.bcel.internal.util.SyntheticRepository;
+import code.landgrey.copagent.utils.ClassUtils;
+import code.landgrey.copagent.utils.LogUtils;
+import code.landgrey.copagent.utils.PathUtils;
+import code.landgrey.copagent.utils.SearchUtils;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.lang.instrument.Instrumentation;
@@ -24,23 +19,9 @@ public class Agent {
     public static File agent_work_directory = null;
 
     public static void agentmain(String agentArgs, Instrumentation instrumentation) {
-        if(agentArgs==null){
-            agentArgs = "[unknown]";
-        }
-        instrumentation.addTransformer(new DefineTransformer(), true);
         catchThief(agentArgs, instrumentation);
-
-    }
-
-    public static void premain(String agentArgs, Instrumentation instrumentation) {
-        if(agentArgs==null){
-            agentArgs = "[unknown]";
-        }
         instrumentation.addTransformer(new DefineTransformer(), true);
-        catchThief(agentArgs, instrumentation);
-
     }
-
 
 
     static class DefineTransformer implements ClassFileTransformer {
@@ -74,24 +55,77 @@ public class Agent {
         ClassUtils.storeAllLoadedClassesName(allLoadedClassFile, loadedClasses);
         LogUtils.logit("All Loaded Classes Name Store in : " + allLoadedClassFile.getAbsolutePath());
 
+        // 实现的可能具有 web shell 功能的父类名
+        List<String> riskSuperClassesName = new ArrayList<String>();
+        riskSuperClassesName.add("javax.servlet.http.HttpServlet");
+
+        // 黑名单拦截
+        List<String> riskPackage = new ArrayList<String>();
+        riskPackage.add("net.rebeyond.");
+        riskPackage.add("com.metasploit.");
+
+        // 风险注解
+        List<String> riskAnnotations = new ArrayList<String>();
+        riskAnnotations.add("org.springframework.stereotype.Controller");
+        riskAnnotations.add("org.springframework.web.bind.annotation.RestController");
+        riskAnnotations.add("org.springframework.web.bind.annotation.RequestMapping");
+        riskAnnotations.add("org.springframework.web.bind.annotation.GetMapping");
+        riskAnnotations.add("org.springframework.web.bind.annotation.PostMapping");
+        riskAnnotations.add("org.springframework.web.bind.annotation.PatchMapping");
+        riskAnnotations.add("org.springframework.web.bind.annotation.PutMapping");
+        riskAnnotations.add("org.springframework.web.bind.annotation.Mapping");
 
         // 默认没有指定具体类名的流程
         if(name.equals("[unknown]")){
-            List<String> interfaces = null;
+            java.util.List<String> interfaces = null;
 
             for(Class<?> clazz: loadedClasses){
-                try {
-                    if(loadedClassesNames.contains(clazz.getName()) && !clazz.getName().contains("$")){
-                        LogUtils.logit("dump class: " + clazz.getName());
-                        ins.retransformClasses(clazz);
-//                        ClassUtils.dumpClass(ins, clazz.getName(), false, null);
-                    }else{
-                        LogUtils.logit("cannot find " + clazz.getName() + " classes in instrumentation");
+                Class<?> target = clazz;
+                boolean not_found = true;
+
+                for(String packageName: riskPackage){
+                    if(clazz.getName().startsWith(packageName)){
+                        resultClasses.add(clazz);
+                        not_found = false;
+                        ClassUtils.dumpClass(ins, clazz.getName(), false, Integer.toHexString(target.getClassLoader().hashCode()));
+                        break;
                     }
-                }catch (Exception e){
-                    LogUtils.logit(e.getMessage());
-                }catch (Throwable e){
-                    LogUtils.logit(e.getMessage());
+                }
+
+                if(ClassUtils.isUseAnnotations(clazz, riskAnnotations)){
+                    resultClasses.add(clazz);
+                    not_found = false;
+                    ClassUtils.dumpClass(ins, clazz.getName(), false, Integer.toHexString(target.getClassLoader().hashCode()));
+                }
+
+                if(not_found){
+                    // 递归查找
+                    while (target != null && !target.getName().equals("java.lang.Object")){
+                        // 每次都重新获得目标类实现的所有接口
+                        interfaces = new ArrayList<String>();
+                        for(Class<?> cls: target.getInterfaces()){
+                            interfaces.add(cls.getName());
+                        }
+                        if( // 继承危险父类的目标类
+                                (target.getSuperclass() != null && riskSuperClassesName.contains(target.getSuperclass().getName())) ||
+                                        // 实现特殊接口的目标类
+                                        target.getName().equals("org.springframework.web.servlet.handler.AbstractHandlerMapping") ||
+                                        interfaces.contains("javax.servlet.Filter") ||
+                                        interfaces.contains("javax.servlet.Servlet") ||
+                                        interfaces.contains("javax.servlet.ServletRequestListener")
+                        )
+                        {
+                            LogUtils.logit("[!] find suspicious class: [" + target.getName() + "]  class hashcode: [" + Integer.toHexString(target.hashCode()) + "]  ClassLoader: [" + target.getClassLoader().getClass().getName() + "]  ClassLoader hashcode: [" + Integer.toHexString(target.getClassLoader().hashCode()) + "]\n\n");
+                            if(loadedClassesNames.contains(clazz.getName())){
+                                resultClasses.add(clazz);
+                                ClassUtils.dumpClass(ins, clazz.getName(), false, Integer.toHexString(clazz.getClassLoader().hashCode()));
+                            }else{
+                                LogUtils.logit("cannot find " + clazz.getName() + " classes in instrumentation");
+                            }
+                            break;
+                        }
+                        target = target.getSuperclass();
+                    }
                 }
 
             }

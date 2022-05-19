@@ -1,4 +1,4 @@
-package utils;
+package code.landgrey.copagent.utils;
 
 
 public abstract class StringUtils {

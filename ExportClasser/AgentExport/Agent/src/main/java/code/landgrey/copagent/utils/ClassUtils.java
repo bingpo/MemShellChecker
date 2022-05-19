@@ -1,6 +1,6 @@
-package utils;
+package code.landgrey.copagent.utils;
 
-import common.ClassDumpTransformer;
+import code.landgrey.copagent.common.ClassDumpTransformer;
 
 import java.io.File;
 import java.lang.annotation.Annotation;
@@ -17,8 +17,6 @@ public class ClassUtils {
             Class<?> c = allClasses.iterator().next();
             ClassDumpTransformer transformer = new ClassDumpTransformer(allClasses);
             InstrumentationUtils.retransformClasses(inst, transformer, allClasses);
-//            Map<Class<?>, File> classFiles = transformer.getDumpResult();
-//            transformer.dumpJavaIfNecessary(c, classFiles);
             return c;
         }else{
             LogUtils.logit(classPattern + " NoSuchElementException");

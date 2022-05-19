@@ -1,4 +1,4 @@
-package utils;
+package code.landgrey.copagent.utils;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
@@ -19,8 +19,6 @@ public class InstrumentationUtils {
             for (Class<?> clazz : classes) {
                 try {
                     inst.retransformClasses(clazz);
-                } catch (Exception e){
-                    LogUtils.logit("retransformClasses class error, name: " + clazz.getName());
                 } catch (Throwable e) {
                     LogUtils.logit("retransformClasses class error, name: " + clazz.getName());
                 }
